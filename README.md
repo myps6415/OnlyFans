@@ -1,63 +1,64 @@
-# OnlyFans DataScraper (Python 3.9.X)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/DIGITALCRIMINAL/OnlyFans.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DIGITALCRIMINAL/OnlyFans/context:python)
-# ![app-token](examples/64255399-96a86700-cf21-11e9-8c62-87a483f33701.png)
-
+# UltimaScraper (Python 3.10.1+)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/0xHoarder.svg?style=social&label=Follow%200xHoarder)](https://twitter.com/0xHoarder)
+# ![app-token](ultima_scraper/docs/assets/img/64255399-96a86700-cf21-11e9-8c62-87a483f33701.png)
+# 27th January 2023 Migration
+    You can either start the script or create the __settings__ and __user_data__ folders manually.
+    ~~~~~~~~
+    Move config.json file into "__settings__"
+    RENAME ".profiles" folder to "profiles" and move it into "__user_data__"
+# List of things I know that are broken:
+    Profile and header images aren't downloading
+    UI (Download Progress Bars to be exact)
 # Mandatory Tutorial
 
 Read the [#FAQ](README.md#faq) at the bottom of this page before submitting a issue.
 
-## Running the app via docker
-
-Build and run the image, mounting the appropriate directories:
-
-`docker build -t only-fans . && docker run -it --rm --name onlyfans -v ${PWD}/.settings:/usr/src/app/.settings -v ${PWD}/.profiles:/usr/src/app/.profiles -v ${PWD}/.sites:/usr/src/app/.sites only-fans`
-
-## Running on Linux
-
-https://github.com/DIGITALCRIMINAL/OnlyFans/discussions/889
-
 ## Running the app locally
+From the project folder open Windows Powershell/Terminal and run the commands below:
 
-From the project folder open CMD/Terminal and run the command below:
+### Installation commands:
+>### Install Poetry
+>https://python-poetry.org/docs/
 
-`pip install --upgrade --user -r requirements.txt`
+Update:
+>`python updater.py`
 
 Start:
 
-`python start_ofd.py` | `python3 start_ofd.py` | double click `start_ofd.py`
-
+>`poetry run python start_us.py`
 ---
 
 Open and edit:
 
-`.profiles/default/auth.json`
+`__user_data__/profiles/default/auth.json`
 
 [auth]
 
 You have to fill in the following:
 
-- `{"cookie":"your_cookie"}`
-- `{"user-agent":"your_user-agent"}`
+- `{"cookie":"cookie_value"}`
+- `{"x_bc":"x-bc_value"}`
+- `{"user_agent":"user-agent_value"}`
 
-Go to www.onlyfans.com and login, open the network debugger, then check the image below on how to get said above cookies
+Go to www.onlyfans.com and login, open the network debugger, then check the image below on how to get said above auth values. Using Chrome for this process is recommended, as other browsers sometimes have issues producing values that will auth properly.
 
-![app-token](examples/3.png)
-![app-token](examples/4.png)
+![app-token](ultima_scraper/docs/assets/img/3.png)
+![app-token](ultima_scraper/docs/assets/img/4.png)
 
 Your auth config should look similar to this
 
-![app-token](examples/5.png)
+![app-token](ultima_scraper/docs/assets/img/5.png)
 
-If you want to auth via browser, add your email and password.
+<!-- If you want to auth via browser, add your email and password. -->
 
 If you get auth attempt errors, only YOU can fix it unless you're willing to let me into your account so I can see if it's working or not.
-All issues about auth errors will be closed automatically. It's spam at this point, there's like 1000s of them and I don't care for anyone who can't use the search function lmao.
 
 Note: If active is set to False, the script will ignore the profile.
 
 # USAGE
 
-`python start_ofd.py` | `python3 start_ofd.py` | double click `start_ofd.py`
+`poetry run python start_us.py`
 
 Enter in inputs as prompted by console.
 
@@ -73,7 +74,7 @@ Open:
 
 Where your account information is stored (auth.json).
 
-    Default = [".profiles"]
+    Default = ["__user_data__/profiles"]
 
     If you're going to fill, please remember to use forward ("/") slashes only.
 
@@ -81,7 +82,7 @@ Where your account information is stored (auth.json).
 
 Where downloaded content is stored.
 
-    Default = [".sites"]
+    Default = ["__user_data__/sites"]
 
     If you're going to fill, please remember to use forward ("/") slashes only.
 
@@ -91,7 +92,7 @@ Where downloaded content is stored.
 
 Where metadata content is stored.
 
-    Default = [".sites"]
+    Default = ["__user_data__/sites"]
 
     If you're going to fill, please remember to use forward ("/") slashes only.
 
@@ -187,31 +188,40 @@ Usage: Select the resolution of the video.
     720p = "720" | "720p"
     240p = "240" | "240p"
 
-### auto_site_choice:
+### auto_profile_choice:
 Types: str|int
+
+Usage: You can automatically choose which profile you want to scrape.
+
+    Default = ""
+
+    If you've got a profile folder named "user_one", set auto_profile_choice to "user_one" and it will choose it automatically.
+
+### auto_site_choice:
+Types: list|str|bool
 
 Usage: You can automatically choose which site you want to scrape.
 
     Default = ""
 
-    OnlyFans = "onlyfans"
+    Inputs: onlyfans, fansly
 
 ### auto_media_choice:
-Types: list|int|str|bool
+Types: list|str|bool
 
 Usage: You can automatically choose which media type you want to scrape.
 
     Default = ""
 
-    Inputs: Images, Videos, etc
-    Inputs: 0,1,etc
+    Inputs: All, Images, Videos, etc
 
     You can automatically choose which type of media you want to scrape.
 
 ### auto_model_choice:
-Types: list|int|str|bool
+Types: list|str|bool
 
     Default = false
+    Inputs: All, username, etc
 
     If set to true, the script will scrape all the names.
 
@@ -222,9 +232,9 @@ Types: list|int|str|bool
     If set to false, you'll be given the option to scrape individual apis.
 
 ### jobs:
-
-    "scrape_names" - This will scrape your standard content
-    "scrape_paid_content" - This will scrape paid content
+    (Downloads)
+    "subscriptions" - This will scrape your standard content
+    "paid_content" - This will scrape paid content
 
     If set to false, it won't do the job.
 
@@ -330,67 +340,54 @@ Types: list|int|str|bool
 ### blacklist_name:
 
     Default = ""
+    Example = ["Blacklisted"]
+    Example = "Blacklisted,alsoforbidden"
 
-    This setting will not include any blacklisted usernames when you choose the "scrape all" option.
+    This setting allows you to remove usernames when you choose the "scrap all" option by using lists or targetting specific usernames.
 
-    Go to https://onlyfans.com/my/lists and create a new list; you can name it whatever you want but I called mine "Blacklisted".
-
+    1. Go to https://onlyfans.com/my/lists and create a new list; you can name it whatever you want but I called mine "Blacklisted".
     Add the list's name to the config.
-
     Example: "blacklist_name": "Blacklisted"
 
-    You can create as many lists as you want.
+    2. Or simply put the username of the content creator in the list.
 
-# FAQ
+# Other Tutorials:
 
-Before troubleshooting, make sure you're using Python 3.9 and the latest commit of the script.
+>## Running the app via docker
+>>Build and run the image, mounting the appropriate directories:
+>
+>>`docker build -t only-fans . && docker run -it --rm --name onlyfans -v ${PWD}/__settings__:/usr/src/app/__settings__ -v ${PWD}/__user_data__:/usr/src/app/__user_data__ only-fans`
 
-Error: Access Denied / Auth Loop
+>## Running on Linux
+>>[Running in Linux](/ultima_scraper/docs/Linux.md)
+
+# FAQ:
+
+Before troubleshooting, make sure you're using Python 3.10.1 and the latest commit of the script.
+
+## Error: Access Denied / Auth Loop
 
 > Quadrupal check that the cookies and user agent are correct.
 > Remove 2FA.
 
-AttributeError: type object 'datetime.datetime' has no attribute 'fromisoformat'
-
-> Only works with Python 3.7 and above.
-
-I can't see ".settings" folder'
-
-> Make sure you can see hidden files
->
-> [Windows Tutorial](https://support.microsoft.com/en-gb/help/4028316/windows-view-hidden-files-and-folders-in-windows-10)
->
-> [Mac Tutorial](https://setapp.com/how-to/show-hidden-files-on-mac)
->
-> [Linux](https://www.google.com)
-
-I'm getting authed into the wrong account
+## I'm getting authed into the wrong account
 
 > Enjoy the free content. | This has been patched lol.
 
-I'm using Linux OS and something isn't working.
-
-> Script was built on Windows 10. If you're using Linux you can still submit an issue and I'll try my best to fix it.
-
-Am I able to bypass paywalls with this script?
-
-> Hell yeah! My open source script can bypass paywalls for free.
-> [Tutorial](https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcS5hTXe02DNlsktpFfkrr--OQ0ScILMibxmpQ&usqp=CAU)
-
-Do OnlyFans or OnlyFans models know I'm using this script?
+## Do OnlyFans or OnlyFans models know I'm using this script?
 
 > OnlyFans may know that you're using this script, but I try to keep it as anon as possible.
 
-> Generally, models will not know unless OnlyFans tells them but there is identifiable information in the metadata folder which contains your IP address, so don't share it unless you're using a proxy/vpn or just don't care.
+> Generally, models will not know unless OnlyFans tells them but other than that there is identifiable information in the metadata folder which contains your IP address, so don't share it unless you're using a proxy/vpn or just don't care. 
 
-Do you collect session information?
+## Do you collect session information?
 
 > No. The code is on Github which allows you to audit the codebase yourself. You can use wireshark or any other network analysis program to verify the outgoing connections are respective to the modules you chose.
 
-Disclaimer (lmao):
+## Serious Disclaimer (lmao):
 
-> OnlyFans is a registered trademark of Fenix International Limited.
-
-> The contributors of this script isn't in any way affiliated with, sponsored by, or endorsed by Fenix International Limited.
-
-> The contributors of this script are not responsible for the end users' actions... lmao.
+> OnlyFans is a registered trademark of Fenix International Limited 🤓☝️.
+>
+> The contributors of this script isn't in any way affiliated with, sponsored by, or endorsed by Fenix International Limited 🤓☝️.
+> 
+> The contributors of this script are not responsible for the end users' actions... 🤓☝️.
