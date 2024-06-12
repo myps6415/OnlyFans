@@ -1,9 +1,6 @@
 # Created by https://www.gitignore.io/api/code,linux,python,pycharm,windows
 # Edit at https://www.gitignore.io/?templates=code,linux,python,pycharm,windows
 
-### auth ###
-.profiles/
-
 ### Code ###
 .vscode/*
 
